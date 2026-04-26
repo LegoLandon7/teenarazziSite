@@ -21,8 +21,8 @@ export default function Home() {
                 setDiscord(dRes.ok ? dJson : null)
                 setReddit(rRes.ok ? rJson : null)
             } catch {
-                setDiscord(null)
-                setReddit(null)
+                setDiscord({ approximate_member_count: 0, approximate_presence_count: 0 })
+                setReddit({ subscribers: 0, weekly_visits: 0 })
             }
         }
 
