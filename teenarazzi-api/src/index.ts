@@ -27,29 +27,69 @@ function isAdmin(c: any): boolean {
 }
 
 async function fetchReddit(env: Bindings): Promise<void> {
-    const aboutRes = await fetch(`https://www.reddit.com/r/${SUBREDDIT}/about.json`, {
-        headers: { 'User-Agent': 'web:teenarazzi-api/2.0 (by u/legomaster_01)' }
-    })
-    if (!aboutRes.ok) throw new Error(`Reddit about.json failed: ${aboutRes.status} ${aboutRes.statusText}`)
+    const lock = await env.STORE.get('reddit_lock')
+    if (lock) {
+        console.log('[reddit] skipped (lock active)')
+        return
+    }
 
-    const { data } = await aboutRes.json() as any
+    await env.STORE.put('reddit_lock', '1', { expirationTtl: 60 })
 
-    const newRes = await fetch(`https://www.reddit.com/r/${SUBREDDIT}/new.json?limit=100`, {
-        headers: { 'User-Agent': 'web:teenarazzi-api/2.0 (by u/legomaster_01)' }
-    })
-    if (!newRes.ok) throw new Error(`Reddit new.json failed: ${newRes.status} ${newRes.statusText}`)
+    try {
+        const cachedRaw = await env.STORE.get('reddit')
+        if (cachedRaw) {
+            const cached = JSON.parse(cachedRaw)
+            const age = Date.now() - cached.last_updated
 
-    const newData = await newRes.json() as any
-    const posts = newData.data.children.map((p: any) => p.data)
-    const postsToday = posts.filter((p: any) => p.created_utc > Date.now() / 1000 - 86400).length
+            if (age < 10 * 60 * 1000) {
+                console.log('[reddit] skipped (fresh cache)')
+                return
+            }
+        }
 
-    await env.STORE.put('reddit', JSON.stringify({
-        members: data.subscribers,
-        posts_today: postsToday,
-        last_updated: Date.now()
-    }))
+        const aboutRes = await fetch(`https://www.reddit.com/r/${SUBREDDIT}/about.json`, {
+            headers: { 'User-Agent': 'web:teenarazzi-api/2.0 (by u/legomaster_01)' }
+        })
 
-    console.log(`[reddit] updated — ${data.subscribers} members, ${postsToday} posts today`)
+        if (aboutRes.status === 429) {
+            console.warn('[reddit] rate limited on about.json')
+            return
+        }
+
+        if (!aboutRes.ok) {
+            throw new Error(`Reddit about.json failed: ${aboutRes.status} ${aboutRes.statusText}`)
+        }
+
+        const { data } = await aboutRes.json() as any
+
+        await new Promise(r => setTimeout(r, Math.random() * 3000))
+
+        let postsToday: number | null = null
+
+        const newRes = await fetch(`https://www.reddit.com/r/${SUBREDDIT}/new.json?limit=25`, {
+            headers: { 'User-Agent': 'web:teenarazzi-api/2.0 (by u/legomaster_01)' }
+        })
+
+        if (newRes.status === 429) {
+            console.warn('[reddit] rate limited on new.json')
+        } else if (!newRes.ok) {
+            throw new Error(`Reddit new.json failed: ${newRes.status} ${newRes.statusText}`)
+        } else {
+            const newData = await newRes.json() as any
+            const posts = newData.data.children.map((p: any) => p.data)
+            postsToday = posts.filter((p: any) => p.created_utc > Date.now() / 1000 - 86400).length
+        }
+
+        await env.STORE.put('reddit', JSON.stringify({
+            members: data.subscribers,
+            posts_today: postsToday,
+            last_updated: Date.now()
+        }))
+
+        console.log(`[reddit] updated — ${data.subscribers} members, ${postsToday ?? 'N/A'} posts today`)
+    } finally {
+        await env.STORE.delete('reddit_lock')
+    }
 }
 
 async function fetchDiscord(env: Bindings): Promise<void> {
