@@ -4,6 +4,8 @@
 
 Teenarazzi is a website for a teen community
 
+Teenarazzi is a project built and operated under the **llegonetwork** brand by Landon Lego.
+
 ---
 
 ## Frontend
