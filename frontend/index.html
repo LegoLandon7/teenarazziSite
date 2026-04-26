@@ -5,6 +5,20 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Teenarazzi</title>
+    <style>
+      html.no-transition * {
+        transition: none !important;
+      }
+    </style>
+    <script>
+      document.documentElement.classList.add('no-transition');
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      document.documentElement.style.background = savedTheme === 'dark' ? '#0f0f0f' : '#eeeeee';
+      setTimeout(() => {
+        document.documentElement.classList.remove('no-transition');
+      }, 50);
+    </script>
   </head>
   <body>
     <div id="root"></div>
