@@ -10,19 +10,33 @@ export default function Home() {
     const [reddit, setReddit] = useState<any>(null)
 
     useEffect(() => {
+        const cached = localStorage.getItem("socialStats")
+        if (cached) {
+            const { discord, reddit } = JSON.parse(cached)
+            setDiscord(discord)
+            setReddit(reddit)
+        }
+
         async function load() {
             try {
-                const dRes = await fetch(`${API}/discord`)
-                const dJson = await dRes.json()
+                const [dRes, rRes] = await Promise.all([
+                    fetch(`${API}/discord`),
+                    fetch(`${API}/reddit`),
+                ])
 
-                const rRes = await fetch(`${API}/reddit`)
-                const rJson = await rRes.json()
+                const [dJson, rJson] = await Promise.all([
+                    dRes.json(),
+                    rRes.json(),
+                ])
 
-                setDiscord(dRes.ok ? dJson : null)
-                setReddit(rRes.ok ? rJson : null)
+                const d = dRes.ok ? dJson : null
+                const r = rRes.ok ? rJson : null
+
+                setDiscord(d)
+                setReddit(r)
+                localStorage.setItem("socialStats", JSON.stringify({ discord: d, reddit: r }))
             } catch {
-                setDiscord({ approximate_member_count: 0, approximate_presence_count: 0 })
-                setReddit({ subscribers: 0, weekly_visits: 0 })
+                // network failure, keep cache
             }
         }
 
@@ -44,29 +58,25 @@ export default function Home() {
                 linkUrl="/about"
             />
 
-            {discord && (
-                <SocialInfo
-                    title="Discord"
-                    icon="https://cdn.simpleicons.org/discord"
-                    stats={[
-                        { label: "Members", value: discord.approximate_member_count ?? 0 },
-                        { label: "Online", value: discord.approximate_presence_count ?? 0 }
-                    ]}
-                    timeStamp={discord.last_updated}
-                />
-            )}
+            <SocialInfo
+                title="Discord"
+                icon="https://cdn.simpleicons.org/discord"
+                stats={[
+                    { label: "Members", value: discord?.approximate_member_count ?? 0 },
+                    { label: "Online", value: discord?.approximate_presence_count ?? 0 },
+                ]}
+                timeStamp={discord?.last_updated ?? null}
+            />
 
-            {reddit && (
-                <SocialInfo
-                    title="Reddit"
-                    icon="https://cdn.simpleicons.org/reddit"
-                    stats={[
-                        { label: "Members", value: reddit.subscribers ?? 0},
-                        { label: "Weekly Visits", value: reddit.weekly_visits ?? 0}
-                    ]}
-                    timeStamp={discord.last_updated}
-                />
-            )}
+            <SocialInfo
+                title="Reddit"
+                icon="https://cdn.simpleicons.org/reddit"
+                stats={[
+                    { label: "Members", value: reddit?.subscribers ?? 0 },
+                    { label: "Weekly Visits", value: reddit?.weekly_visits ?? 0 },
+                ]}
+                timeStamp={reddit?.last_updated ?? null}
+            />
         </>
     )
 }

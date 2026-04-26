@@ -1,40 +1,47 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react"
+import SiteHeader from "../components/SiteHeader.tsx"
+import SiteSection from "../components/SiteSection.tsx"
+import EditModal from "../components/EditModal.tsx"
 
-import SiteHeader from '../components/SiteHeader.tsx';
-import SiteSection from '../components/SiteSection.tsx';
-import EditModal from '../components/EditModal.tsx';
-
-const API = 'https://api.teenarazzi.com/v2';
+const API = "https://api.teenarazzi.com/v2"
 
 type Section = {
-    id: number;
-    content: string;
-    last_updated: number;
-};
+    id: number
+    content: string
+    last_updated: number
+}
 
 export default function About() {
-    const [sections, setSections] = useState<Section[]>([]);
-    const [editing, setEditing] = useState<number | null>(null);
+    const [sections, setSections] = useState<Section[]>([])
+    const [editing, setEditing] = useState<number | null>(null)
 
     useEffect(() => {
+        const cached = localStorage.getItem("aboutSections")
+        if (cached) setSections(JSON.parse(cached))
+
         fetch(`${API}/about`)
             .then(res => res.json())
-            .then(setSections);
-    }, []);
+            .then(data => {
+                if (!Array.isArray(data)) return
+                setSections(data)
+                localStorage.setItem("aboutSections", JSON.stringify(data))
+            })
+            .catch(() => {})
+    }, [])
 
     const section = (id: number) =>
-        sections.find(s => s.id === id)?.content ?? 'Loading...';
+        sections.find(s => s.id === id)?.content ?? "Loading..."
 
     const sectionHeads: Record<number, string> = {
-        1: 'About Us',
-        2: 'Reddit',
-        3: 'Discord',
-    };
+        1: "About Us",
+        2: "Reddit",
+        3: "Discord",
+    }
 
     return (
         <>
             <SiteHeader
-                head="About Teenrazzi"
+                head="About Teenarazzi"
                 subhead="Extended information about Teenarazzi"
                 align="left"
                 backLabel="Home"
@@ -70,5 +77,5 @@ export default function About() {
                 />
             )}
         </>
-    );
+    )
 }

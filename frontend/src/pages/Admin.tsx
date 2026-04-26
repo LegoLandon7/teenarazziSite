@@ -414,12 +414,20 @@ export default function Admin() {
                 <h2 style={{ fontSize: 'var(--text-lg)', fontWeight: 'var(--weight-bold)', margin: 0 }}>
                     Admin Panel
                 </h2>
-                <button
-                    onClick={logout}
-                    style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)' }}
-                >
-                    Logout
-                </button>
+                <div style={{ display: 'flex', gap: 'var(--space-sm)', alignItems: 'center' }}>
+                    <button
+                        onClick={() => { loadSections(); loadUpdates() }}
+                        style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)' }}
+                    >
+                        ↻ Refresh
+                    </button>
+                    <button
+                        onClick={logout}
+                        style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)' }}
+                    >
+                        Logout
+                    </button>
+                </div>
             </div>
 
             {/* nav */}
