@@ -124,7 +124,9 @@
             width: 48px;
             height: 48px;
 
-            background: none;
+            border: 2px solid var(--border-strong);
+            background: var(--bg-subtle);
+
             font-size: var(--text-lg);
             border-radius: var(--radius-full);
             cursor: pointer;
@@ -132,7 +134,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-
+            line-height: 1;
+            text-align: center;
             transition: background var(--transition), border-color var(--transition);
 
             &:hover { background: var(--text); }
