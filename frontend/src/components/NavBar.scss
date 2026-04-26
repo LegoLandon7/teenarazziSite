@@ -121,13 +121,13 @@
         }
 
         .theme-toggle {
-            width: 48px;
-            height: 48px;
+            width: 42px;
+            height: 42px;
 
             border: 2px solid var(--border-strong);
-            background: var(--bg-subtle);
+            background: var(--bg-surface);
 
-            font-size: var(--text-lg);
+            font-size: var(--text-md);
             border-radius: var(--radius-full);
             cursor: pointer;
 
@@ -136,9 +136,10 @@
             justify-content: center;
             line-height: 1;
             text-align: center;
+
             transition: background var(--transition), border-color var(--transition);
 
-            &:hover { background: var(--text); }
+            &:hover { background: var(--bg-subtle); }
         }
     }
 
