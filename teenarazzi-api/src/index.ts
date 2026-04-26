@@ -17,9 +17,17 @@ const app = new Hono<{ Bindings: Bindings }>().basePath('/v2')
 app.use('*', cors())
 
 async function rateLimit(c: any): Promise<boolean> {
-    const ip = c.req.header('CF-Connecting-IP') ?? 'unknown'
-    const { success } = await c.env.RATE_LIMITER.limit({ key: ip })
-    return success
+    try {
+        const ip = c.req.header('CF-Connecting-IP') || c.req.header('X-Forwarded-For') || 'unknown'
+        const { success } = await c.env.RATE_LIMITER.limit({ key: ip })
+        if (!success) {
+            console.warn(`[rate-limit] exceeded for IP: ${ip}`)
+        }
+        return success
+    } catch (error) {
+        console.error('[rate-limit] error:', error)
+        return false
+    }
 }
 
 function isAdmin(c: any): boolean {
@@ -27,68 +35,132 @@ function isAdmin(c: any): boolean {
 }
 
 async function fetchReddit(env: Bindings): Promise<void> {
-    const lock = await env.STORE.get('reddit_lock')
-    if (lock) {
+    const lockKey = 'reddit_lock'
+    const retryKey = 'reddit_retry_after'
+
+    const lock = await env.STORE.get(lockKey)
+    if (lock === '1') {
         console.log('[reddit] skipped (lock active)')
         return
     }
 
-    await env.STORE.put('reddit_lock', '1', { expirationTtl: 60 })
+    // Check if we're in a rate limit cooldown
+    const retryAfter = await env.STORE.get(retryKey)
+    if (retryAfter) {
+        console.warn('[reddit] skipped (rate limit cooldown active)')
+        return
+    }
+
+    await env.STORE.put(lockKey, '1', { expirationTtl: 300 })
 
     try {
         const cachedRaw = await env.STORE.get('reddit')
+
         if (cachedRaw) {
             const cached = JSON.parse(cachedRaw)
             const age = Date.now() - cached.last_updated
 
-            if (age < 10 * 60 * 1000) {
+            if (age < 30 * 60 * 1000) {
                 console.log('[reddit] skipped (fresh cache)')
                 return
             }
         }
 
         const aboutRes = await fetch(`https://www.reddit.com/r/${SUBREDDIT}/about.json`, {
-            headers: { 'User-Agent': 'web:teenarazzi-api/2.0 (by u/legomaster_01)' }
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "application/json, text/plain, */*",
+                "Accept-Language": "en-US,en;q=0.9",
+                "Accept-Encoding": "gzip, deflate, br",
+                "DNT": "1",
+                "Connection": "keep-alive",
+                "Upgrade-Insecure-Requests": "1",
+                "Sec-Fetch-Dest": "document",
+                "Sec-Fetch-Mode": "navigate",
+                "Sec-Fetch-Site": "none"
+            }
         })
 
         if (aboutRes.status === 429) {
-            console.warn('[reddit] rate limited on about.json')
+            const retryAfterHeader = aboutRes.headers.get('retry-after')
+            const backoffSeconds = retryAfterHeader ? Math.min(parseInt(retryAfterHeader), 3600) : 300
+            await env.STORE.put(retryKey, '1', { expirationTtl: backoffSeconds })
+            console.warn(`[reddit] rate limited on about.json, backing off for ${backoffSeconds}s`, {
+                headers: {
+                    'x-ratelimit-remaining': aboutRes.headers.get('x-ratelimit-remaining'),
+                    'x-ratelimit-reset': aboutRes.headers.get('x-ratelimit-reset')
+                }
+            })
+            return
+        }
+
+        if (aboutRes.status === 403) {
+            console.error(`[reddit] forbidden on about.json (403) - Reddit may be blocking Cloudflare Workers`, {
+                url: `https://www.reddit.com/r/${SUBREDDIT}/about.json`,
+                headers: {
+                    'cf-ray': aboutRes.headers.get('cf-ray'),
+                    'server': aboutRes.headers.get('server')
+                }
+            })
             return
         }
 
         if (!aboutRes.ok) {
-            throw new Error(`Reddit about.json failed: ${aboutRes.status} ${aboutRes.statusText}`)
+            throw new Error(`about.json failed: ${aboutRes.status} ${aboutRes.statusText}`)
         }
 
-        const { data } = await aboutRes.json() as any
+        const about = await aboutRes.json() as any
 
-        await new Promise(r => setTimeout(r, Math.random() * 3000))
+        await new Promise(resolve => setTimeout(resolve, 500))
 
         let postsToday: number | null = null
-
-        const newRes = await fetch(`https://www.reddit.com/r/${SUBREDDIT}/new.json?limit=25`, {
-            headers: { 'User-Agent': 'web:teenarazzi-api/2.0 (by u/legomaster_01)' }
+        const newRes = await fetch(`https://www.reddit.com/r/${SUBREDDIT}/new.json?limit=100`, {
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "application/json, text/plain, */*",
+                "Accept-Language": "en-US,en;q=0.9",
+                "Accept-Encoding": "gzip, deflate, br",
+                "DNT": "1",
+                "Connection": "keep-alive",
+                "Upgrade-Insecure-Requests": "1",
+                "Sec-Fetch-Dest": "document",
+                "Sec-Fetch-Mode": "navigate",
+                "Sec-Fetch-Site": "none"
+            }
         })
 
         if (newRes.status === 429) {
-            console.warn('[reddit] rate limited on new.json')
-        } else if (!newRes.ok) {
-            throw new Error(`Reddit new.json failed: ${newRes.status} ${newRes.statusText}`)
-        } else {
+            const retryAfterHeader = newRes.headers.get('retry-after')
+            const backoffSeconds = retryAfterHeader ? Math.min(parseInt(retryAfterHeader), 3600) : 300
+            await env.STORE.put(retryKey, '1', { expirationTtl: backoffSeconds })
+            console.warn(`[reddit] rate limited on new.json, backing off for ${backoffSeconds}s`)
+            return
+        }
+
+        if (newRes.status === 403) {
+            console.error(`[reddit] forbidden on new.json (403) - Reddit may be blocking Cloudflare Workers`)
+            return
+        }
+
+        if (newRes.ok) {
             const newData = await newRes.json() as any
-            const posts = newData.data.children.map((p: any) => p.data)
-            postsToday = posts.filter((p: any) => p.created_utc > Date.now() / 1000 - 86400).length
+
+            const now = Date.now() / 1000
+            postsToday = newData.data.children
+                .map((p: any) => p.data)
+                .filter((p: any) => p.created_utc > now - 86400)
+                .length
         }
 
         await env.STORE.put('reddit', JSON.stringify({
-            members: data.subscribers,
+            members: about.data.subscribers,
             posts_today: postsToday,
             last_updated: Date.now()
         }))
 
-        console.log(`[reddit] updated — ${data.subscribers} members, ${postsToday ?? 'N/A'} posts today`)
+        console.log(`[reddit] updated — ${about.data.subscribers} members, ${postsToday} posts today`)
     } finally {
-        await env.STORE.delete('reddit_lock')
+        await env.STORE.delete(lockKey)
     }
 }
 
