@@ -10,7 +10,7 @@ export default function Settings() {
     return (
         <>
             <SiteHeader 
-                head="llegonetwork Settings"
+                head="Teenarazzi Settings"
                 subhead="settings for the website, appearance, and more."
                 align="left"
                 backLabel="Home"
