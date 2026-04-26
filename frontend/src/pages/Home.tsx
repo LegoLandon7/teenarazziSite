@@ -1,20 +1,22 @@
-import { useEffect, useState } from "react"
-import Card from "../components/Card.tsx"
-import SiteHeader from "../components/SiteHeader.tsx"
-import SocialInfo from "../components/SocialInfo.tsx"
+import { useEffect, useState } from "react";
+import Card from "../components/Card.tsx";
+import SiteHeader from "../components/SiteHeader.tsx";
+import SocialInfo from "../components/SocialInfo.tsx";
 
-const API = "https://api.teenarazzi.com/v2"
+const API = "https://api.teenarazzi.com/v2";
 
 export default function Home() {
-    const [discord, setDiscord] = useState<any>(null)
-    const [reddit, setReddit] = useState<any>(null)
+    const [discord, setDiscord] = useState<any>(null);
+    const [reddit, setReddit] = useState<any>(null);
 
     useEffect(() => {
-        const cached = localStorage.getItem("socialStats")
+        const cached = localStorage.getItem("socialStats");
         if (cached) {
-            const { discord, reddit } = JSON.parse(cached)
-            setDiscord(discord)
-            setReddit(reddit)
+            const parsed = JSON.parse(cached);
+            setDiscord(parsed.discord);
+            setReddit(parsed.reddit);
+            const age = Date.now() - (parsed.cachedAt ?? 0);
+            if (age < 5 * 60 * 1000) return; // 5 minutes cache
         }
 
         async function load() {
@@ -22,26 +24,31 @@ export default function Home() {
                 const [dRes, rRes] = await Promise.all([
                     fetch(`${API}/discord`),
                     fetch(`${API}/reddit`),
-                ])
+                ]);
 
                 const [dJson, rJson] = await Promise.all([
                     dRes.json(),
                     rRes.json(),
-                ])
+                ]);
 
-                const d = dRes.ok ? dJson : null
-                const r = rRes.ok ? rJson : null
+                const d = dRes.ok ? dJson : null;
+                const r = rRes.ok ? rJson : null;
 
-                setDiscord(d)
-                setReddit(r)
-                localStorage.setItem("socialStats", JSON.stringify({ discord: d, reddit: r }))
+                setDiscord(d);
+                setReddit(r);
+
+                localStorage.setItem("socialStats", JSON.stringify({
+                    discord: d,
+                    reddit: r,
+                    cachedAt: Date.now(),
+                }));
             } catch {
                 // network failure, keep cache
             }
         }
 
-        load()
-    }, [])
+        load();
+    }, []);
 
     return (
         <>
@@ -62,8 +69,8 @@ export default function Home() {
                 title="Discord"
                 icon="https://cdn.simpleicons.org/discord"
                 stats={[
-                    { label: "Members", value: discord?.approximate_member_count ?? 0 },
-                    { label: "Online", value: discord?.approximate_presence_count ?? 0 },
+                    { label: "Members", value: discord?.members ?? 0 },
+                    { label: "Online", value: discord?.active_members ?? 0 },
                 ]}
                 timeStamp={discord?.last_updated ?? null}
             />
@@ -72,11 +79,11 @@ export default function Home() {
                 title="Reddit"
                 icon="https://cdn.simpleicons.org/reddit"
                 stats={[
-                    { label: "Members", value: reddit?.subscribers ?? 0 },
-                    { label: "Weekly Visits", value: reddit?.weekly_visits ?? 0 },
+                    { label: "Members", value: reddit?.members ?? 0 },
+                    { label: "Posts Today", value: reddit?.posts_today ?? 0 },
                 ]}
                 timeStamp={reddit?.last_updated ?? null}
             />
         </>
-    )
+    );
 }
