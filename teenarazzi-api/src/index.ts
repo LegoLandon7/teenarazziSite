@@ -26,17 +26,19 @@ function isAdmin(c: any): boolean {
     return c.req.header('X-Admin-Secret') === c.env.ADMIN_SECRET
 }
 
-async function fetchReddit(env: Bindings) {
-    const res = await fetch(`https://www.reddit.com/r/${SUBREDDIT}/about.json`, {
-        headers: { 'User-Agent': 'teenarazzi-api/1.0' }
+async function fetchReddit(env: Bindings): Promise<void> {
+    const aboutRes = await fetch(`https://www.reddit.com/r/${SUBREDDIT}/about.json`, {
+        headers: { 'User-Agent': 'web:teenarazzi-api/2.0 (by u/legomaster_01)' }
     })
-    if (!res.ok) return
-    const { data } = await res.json() as any
+    if (!aboutRes.ok) throw new Error(`Reddit about.json failed: ${aboutRes.status} ${aboutRes.statusText}`)
 
-    const newRes = await fetch(`https://www.reddit.com/r/${SUBREDDIT}/new.json?limit=25`, {
-        headers: { 'User-Agent': 'teenarazzi-api/1.0' }
+    const { data } = await aboutRes.json() as any
+
+    const newRes = await fetch(`https://www.reddit.com/r/${SUBREDDIT}/new.json?limit=100`, {
+        headers: { 'User-Agent': 'web:teenarazzi-api/2.0 (by u/legomaster_01)' }
     })
-    if (!newRes.ok) return
+    if (!newRes.ok) throw new Error(`Reddit new.json failed: ${newRes.status} ${newRes.statusText}`)
+
     const newData = await newRes.json() as any
     const posts = newData.data.children.map((p: any) => p.data)
     const postsToday = posts.filter((p: any) => p.created_utc > Date.now() / 1000 - 86400).length
@@ -46,13 +48,16 @@ async function fetchReddit(env: Bindings) {
         posts_today: postsToday,
         last_updated: Date.now()
     }))
+
+    console.log(`[reddit] updated — ${data.subscribers} members, ${postsToday} posts today`)
 }
 
-async function fetchDiscord(env: Bindings) {
+async function fetchDiscord(env: Bindings): Promise<void> {
     const res = await fetch(`https://discord.com/api/v10/guilds/${GUILD_ID}?with_counts=true`, {
         headers: { Authorization: `Bot ${env.BOT_TOKEN}` }
     })
-    if (!res.ok) return
+    if (!res.ok) throw new Error(`Discord API failed: ${res.status} ${res.statusText}`)
+
     const data = await res.json() as any
 
     await env.STORE.put('discord', JSON.stringify({
@@ -60,6 +65,8 @@ async function fetchDiscord(env: Bindings) {
         active_members: data.approximate_presence_count,
         last_updated: Date.now()
     }))
+
+    console.log(`[discord] updated — ${data.approximate_member_count} members, ${data.approximate_presence_count} online`)
 }
 
 app.get('/reddit', async (c) => {
@@ -78,7 +85,17 @@ app.get('/discord', async (c) => {
 
 app.post('/refresh', async (c) => {
     if (!isAdmin(c)) return c.json({ error: 'Unauthorized' }, 401)
-    await Promise.all([fetchReddit(c.env), fetchDiscord(c.env)])
+
+    const results = await Promise.allSettled([fetchReddit(c.env), fetchDiscord(c.env)])
+
+    const errors: Record<string, string> = {}
+    if (results[0].status === 'rejected') errors.reddit = (results[0] as PromiseRejectedResult).reason?.message
+    if (results[1].status === 'rejected') errors.discord = (results[1] as PromiseRejectedResult).reason?.message
+
+    if (Object.keys(errors).length > 0) {
+        return c.json({ success: false, errors }, 500)
+    }
+
     return c.json({ success: true })
 })
 
@@ -162,6 +179,15 @@ export default {
     fetch: app.fetch,
 
     async scheduled(_event: ScheduledEvent, env: Bindings) {
-        await Promise.all([fetchReddit(env), fetchDiscord(env)])
+        const results = await Promise.allSettled([
+            fetchReddit(env),
+            fetchDiscord(env),
+        ])
+
+        for (const [name, result] of [['reddit', results[0]], ['discord', results[1]]] as const) {
+            if (result.status === 'rejected') {
+                console.error(`[${name}] fetch failed:`, (result as PromiseRejectedResult).reason?.message)
+            }
+        }
     }
 }
