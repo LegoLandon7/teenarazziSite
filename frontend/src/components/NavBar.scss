@@ -82,7 +82,7 @@
         align-items: center;
         height: var(--navbar-height);
 
-        a, button {
+        a, button:not(.theme-toggle) {
             position: relative;
             display: inline-flex;
             align-items: center;
@@ -118,6 +118,24 @@
 
             &:hover::after  { transform: scaleX(1); }
             &.active::after { transform: scaleX(1); }
+        }
+
+        .theme-toggle {
+            width: 48px;
+            height: 48px;
+
+            background: none;
+            font-size: var(--text-lg);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            transition: background var(--transition), border-color var(--transition);
+
+            &:hover { background: var(--text); }
         }
     }
 

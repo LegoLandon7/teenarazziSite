@@ -14,6 +14,9 @@ export default function Footer() {
                 </a>
 
                 <a href="/admin">Admin</a>
+
+                <div style={{ padding: "2rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+            </div>
             </div>
         </footer>
     );

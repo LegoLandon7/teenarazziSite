@@ -8,7 +8,6 @@ import Footer from '../components/Footer.tsx'
 import Home from './Home.tsx'
 import About from './About.tsx';
 import Socials from './Socials.tsx';
-import Settings from './Settings.tsx';
 
 import Admin from './Admin.tsx';
 
@@ -32,7 +31,6 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/socials" element={<Socials />} />
-          <Route path="/settings" element={<Settings />} />
 
           <Route path="/admin" element={<Admin />} />
         </Routes>

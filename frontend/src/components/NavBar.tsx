@@ -4,7 +4,7 @@ import './NavBar.scss';
 
 export default function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "light");
   const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -22,6 +22,13 @@ export default function NavBar() {
     setMenuOpen(false);
   }
 
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
+  };
+
   return (
     <nav className="navbar" ref={navRef}>
       <NavLink className="nav-brand" to="/">
@@ -36,8 +43,12 @@ export default function NavBar() {
         <NavLink to="/" onClick={closeAll}>Home</NavLink>
         <NavLink to="/about" onClick={closeAll}>About</NavLink>
         <NavLink to="/socials" onClick={closeAll}>Socials</NavLink>
-        <NavLink to="/settings" onClick={closeAll}>Settings</NavLink>
 
+        <button
+          className="theme-toggle"
+          onClick={toggleTheme}
+        >{theme === "dark" ? "🌙" : "☀️"}
+        </button>
       </div>
 
       <button
