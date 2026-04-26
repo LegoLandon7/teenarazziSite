@@ -1,0 +1,35 @@
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "teenarazzi-api-v2",
+    "main": "src/index.ts",
+    "compatibility_date": "2026-04-26",
+    "triggers": {
+        "crons": ["*/5 * * * *"]
+    },
+    "d1_databases": [
+        {
+            "binding": "teenarazzi_database",
+            "database_name": "teenarazzi-database",
+            "database_id": "ed29bad7-6624-4b84-9d5e-4c1f946dc661"
+        }
+    ],
+    "kv_namespaces": [
+        {
+            "binding": "STORE",
+            "id": "6980578a5fe041f59dbfc874e26b64e5"
+        }
+    ],
+    "unsafe": {
+        "bindings": [
+            {
+                "name": "RATE_LIMITER",
+                "type": "ratelimit",
+                "namespace_id": "1",
+                "simple": {
+                    "limit": 30,
+                    "period": 60
+                }
+            }
+        ]
+    }
+}

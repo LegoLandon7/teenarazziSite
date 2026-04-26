@@ -1,0 +1,80 @@
+.edit-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-modal);
+    padding: var(--space-md);
+}
+
+.edit-modal {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+
+    .edit-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        h3 {
+            font-size: var(--text-md);
+            font-weight: var(--weight-medium);
+        }
+
+        .close-btn {
+            color: var(--text-faint);
+            font-size: var(--text-md);
+        }
+    }
+
+    textarea {
+        width: 100%;
+        resize: none;
+        color: var(--text);
+        font-family: var(--font-sans);
+    }
+
+    .edit-modal-actions {
+        display: flex;
+        gap: var(--space-sm);
+        justify-content: flex-end;
+
+        .cancel-btn {
+            font-size: var(--text-sm);
+            color: var(--text-muted);
+            padding: var(--space-xs) var(--space-md);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--bg-surface);
+        }
+
+        .submit-btn {
+            font-size: var(--text-sm);
+            font-weight: var(--weight-medium);
+            color: #000;
+            padding: var(--space-xs) var(--space-md);
+            border-radius: var(--radius-md);
+            background: var(--accent);
+        }
+    }
+
+    .edit-modal-success {
+        color: var(--success);
+        text-align: center;
+        margin: var(--space-lg) 0;
+    }
+
+    .edit-modal-error {
+        color: var(--danger);
+        font-size: var(--text-sm);
+    }
+}
