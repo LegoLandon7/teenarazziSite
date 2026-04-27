@@ -34,6 +34,12 @@
                 color: var(--text);
             }
 
+            .social-title p {
+                margin: 0;
+                font-size: var(--text-xs);
+                color: var(--text-subtle);
+            }
+
         .social-edit {
             background: transparent;
             border: 1px solid var(--border);
