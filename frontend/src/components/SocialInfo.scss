@@ -8,19 +8,16 @@
     flex-direction: column;
     gap: var(--space-md);
     margin: var(--space-md);
-}
 
     .social-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-    }
 
         .social-title {
             display: flex;
             align-items: center;
             gap: var(--space-sm);
-        }
 
             .social-icon {
                 width: 22px;
@@ -28,32 +25,62 @@
                 border-radius: 6px;
             }
 
-            .social-title h3 {
+            h3 {
                 margin: 0;
                 font-size: var(--text-md);
                 color: var(--text);
             }
 
-            .social-title p {
+            p {
                 margin: 0;
                 font-size: var(--text-xs);
-                color: var(--text-subtle);
+                color: var(--text-faint);
             }
-
-        .social-edit {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 4px 10px;
-            border-radius: var(--radius-md);
-            font-size: var(--text-xs);
-            cursor: pointer;
         }
 
-            .social-edit:hover {
+        .social-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+
+            .social-refresh {
+                background: var(--bg);
+                border: 1px solid var(--border);
                 color: var(--text);
-                border-color: var(--text-muted);
+                padding: 0.5rem 0.75rem;
+                border-radius: var(--radius-md);
+                font-size: var(--text-sm);
+                font-weight: var(--weight-medium);
+                cursor: pointer;
+                transition: background var(--transition), border-color var(--transition), color var(--transition), opacity var(--transition);
+
+                &:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
+
+                &:hover:not(:disabled) {
+                    background: var(--bg-hover);
+                }
             }
+
+            .social-edit {
+                background: transparent;
+                border: 1px solid var(--border);
+                color: var(--text-muted);
+                padding: 4px 10px;
+                border-radius: var(--radius-md);
+                font-size: var(--text-xs);
+                cursor: pointer;
+                transition: border-color var(--transition), color var(--transition);
+
+                &:hover {
+                    color: var(--text);
+                    border-color: var(--text-muted);
+                }
+            }
+        }
+    }
 
     .social-grid {
         display: grid;
@@ -81,3 +108,29 @@
                 font-weight: var(--weight-medium);
                 color: var(--text);
             }
+
+    .social-actions {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+}
+
+.social-refresh {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: opacity 0.2s;
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
+        opacity: 0.7;
+    }
+}

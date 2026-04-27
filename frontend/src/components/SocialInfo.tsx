@@ -1,26 +1,26 @@
-import './SocialInfo.scss'
-
-type Stat = {
-    label: string
-    value: string | number
-}
+import "./SocialInfo.scss"
 
 export default function SocialInfo({
     title,
     stats,
     icon,
     onEdit,
+    onRefresh,
+    refreshing,
+    refreshDisabled = false,
     timeStamp,
 }: {
     title: string
     icon?: string
     stats: Stat[]
     onEdit?: () => void
+    onRefresh?: () => void
+    refreshing?: boolean
+    refreshDisabled?: boolean
     timeStamp: number
 }) {
     return (
         <div className="social-card">
-
             <div className="social-header">
                 <div className="social-title">
                     {icon && <img src={icon} className="social-icon" />}
@@ -28,11 +28,21 @@ export default function SocialInfo({
                     <p>{"last updated: " + new Date(timeStamp).toLocaleString()}</p>
                 </div>
 
-                {onEdit && (
-                    <button className="social-edit" onClick={onEdit}>
-                        Edit
-                    </button>
-                )}
+                <div className="social-actions">
+                    {onRefresh && (
+                        <button
+                            className="social-refresh"
+                            onClick={onRefresh}
+                            disabled={refreshing || refreshDisabled}
+                            aria-label="Refresh"
+                        >
+                            {refreshing ? "Refreshing..." : "🗘 Refresh"}
+                        </button>
+                    )}
+                    {onEdit && (
+                        <button className="social-edit" onClick={onEdit}>Edit</button>
+                    )}
+                </div>
             </div>
 
             <div className="social-grid">
@@ -43,7 +53,6 @@ export default function SocialInfo({
                     </div>
                 ))}
             </div>
-
         </div>
-    )
+    );
 }
