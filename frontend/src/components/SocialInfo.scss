@@ -25,10 +25,17 @@
                 border-radius: 6px;
             }
 
-            h3 {
+            a {
                 margin: 0;
                 font-size: var(--text-md);
                 color: var(--text);
+                text-decoration: none;
+
+                transition: color var(--transition);
+
+                &:hover {
+                    color: var(--accent);
+                }
             }
 
             p {

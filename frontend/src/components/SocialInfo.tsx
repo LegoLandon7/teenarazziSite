@@ -2,6 +2,7 @@ import "./SocialInfo.scss"
 
 export default function SocialInfo({
     title,
+    link,
     stats,
     icon,
     onEdit,
@@ -11,6 +12,7 @@ export default function SocialInfo({
     timeStamp,
 }: {
     title: string
+    link?: string
     icon?: string
     stats: Stat[]
     onEdit?: () => void
@@ -24,7 +26,9 @@ export default function SocialInfo({
             <div className="social-header">
                 <div className="social-title">
                     {icon && <img src={icon} className="social-icon" />}
-                    <h3>{title}</h3>
+                    <a href={link || title} target="_blank" rel="noopener noreferrer">
+                        {title}
+                    </a>
                     <p>{"last updated: " + new Date(timeStamp).toLocaleString()}</p>
                 </div>
 

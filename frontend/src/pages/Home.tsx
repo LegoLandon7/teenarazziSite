@@ -128,6 +128,7 @@ export default function Home() {
 
             <SocialInfo
                 title="Discord"
+                link="https://discord.gg/py9ePyMdec"
                 icon="https://cdn.simpleicons.org/discord"
                 stats={[
                     { label: "Members", value: discord?.members ?? 0 },
@@ -141,6 +142,7 @@ export default function Home() {
 
             <SocialInfo
                 title="Reddit"
+                link="https://reddit.com/r/teenarazzi"
                 icon="https://cdn.simpleicons.org/reddit"
                 stats={[
                     { label: "Members", value: reddit?.members ?? 0 },
