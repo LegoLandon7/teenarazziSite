@@ -17,7 +17,7 @@ npm run dev
 
 ---
 
-## Backend
+## Backend (not fully documented yet)
 
 The backend runs as a Cloudflare Worker using Hono and Cloudflare D1 for database management.
 
