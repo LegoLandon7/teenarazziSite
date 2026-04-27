@@ -186,6 +186,9 @@ body {
     line-height: 1.6;
 
     padding-top: var(--navbar-height);
+
+    display: flex;
+    justify-content: center;
 }
 
 .main-content {
