@@ -44,6 +44,12 @@
         &:hover { color: var(--accent-hover); }
     }
 
+    .nav-controls {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+    }
+
     .hamburger {
         display: none;
         flex-direction: column;
@@ -67,7 +73,7 @@
             background: var(--text);
             border-radius: var(--radius-full);
             transform-origin: center;
-            transition: transform var(--transition), opacity var(--transition), width var(--transition);
+            transition: transform var(--transition), opacity var(--transition), width var(--transition), background var(--transition);
         }
 
         &.open {
@@ -81,6 +87,7 @@
         display: flex;
         align-items: center;
         height: var(--navbar-height);
+        margin-left: auto;
 
         a, button:not(.theme-toggle) {
             position: relative;
@@ -119,28 +126,29 @@
             &:hover::after  { transform: scaleX(1); }
             &.active::after { transform: scaleX(1); }
         }
+    }
 
-        .theme-toggle {
-            width: 42px;
-            height: 42px;
+    .theme-toggle {
+        width: 42px;
+        height: 42px;
 
-            border: 2px solid var(--border-strong);
-            background: var(--bg-surface);
+        border: 2px solid var(--border-strong);
+        background: var(--bg-subtle);
 
-            font-size: var(--text-md);
-            border-radius: var(--radius-full);
-            cursor: pointer;
+        font-size: var(--text-md);
+        border-radius: var(--radius-full);
+        cursor: pointer;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-            text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        text-align: center;
+        flex-shrink: 0;
 
-            transition: background var(--transition), border-color var(--transition);
+        transition: background var(--transition), border-color var(--transition);
 
-            &:hover { background: var(--bg-subtle); }
-        }
+        &:hover { background: var(--bg-hover); }
     }
 
     @media (max-width: 768px) {
@@ -168,7 +176,10 @@
             border-radius: 0 0 0 var(--radius-md);
 
             transform: translateX(100%);
-            transition: transform var(--transition);
+            transition: 
+                transform var(--transition),
+                background-color var(--transition),
+                border-color var(--transition);
             pointer-events: none;
 
             &.open {
@@ -179,6 +190,7 @@
             a, button {
                 height: var(--navbar-height);
                 padding: 0 var(--space-md);
+                transition: color var(--transition), background-color var(--transition);
 
                 &::after { display: none; }
 

@@ -43,24 +43,25 @@ export default function NavBar() {
         <NavLink to="/" onClick={closeAll}>Home</NavLink>
         <NavLink to="/about" onClick={closeAll}>About</NavLink>
         <NavLink to="/socials" onClick={closeAll}>Socials</NavLink>
+      </div>
 
+      <div className="nav-controls">
         <button
           className="theme-toggle"
           onClick={toggleTheme}
         >{theme === "dark" ? "🌙" : "☀️"}
         </button>
+        <button
+          className={`hamburger ${menuOpen ? 'open' : ''}`}
+          onClick={() => {
+            setMenuOpen(!menuOpen);
+          }}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
       </div>
-
-      <button
-        className={`hamburger ${menuOpen ? 'open' : ''}`}
-        onClick={() => {
-          setMenuOpen(!menuOpen);
-        }}
-      >
-        <span />
-        <span />
-        <span />
-      </button>
     </nav>
   );
 }
