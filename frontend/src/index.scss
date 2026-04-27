@@ -116,8 +116,9 @@ a {
     margin: 0;
     padding: 0;
 
-    transition: 
+    transition:
         background-color var(--transition),
+        background var(--transition),
         color var(--transition),
         border-color var(--transition),
         box-shadow var(--transition),
@@ -171,10 +172,15 @@ img, video {
 }
 
 ul, ol { list-style: none; }
-html   { scroll-behavior: smooth; }
+html { 
+    background-color: var(--bg);
+    transition: background-color var(--transition), background var(--transition);
+    scroll-behavior: smooth; 
+}
 
 body {
     background-color: var(--bg);
+    transition: background-color var(--transition), background var(--transition);
 
     color: var(--text);
     line-height: 1.6;
@@ -185,7 +191,8 @@ body {
 .main-content {
     width: 100%;
     max-width: var(--max-width);
-    margin: 0 auto;
+
+    padding: var(--space-lg);
 
     min-height: 100vh;
 

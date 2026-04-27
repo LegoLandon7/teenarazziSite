@@ -25,6 +25,8 @@
             color: var(--text);
             transition: color var(--transition);
 
+            text-align: right;
+
             &:hover {
                 color: var(--accent-hover);
             }

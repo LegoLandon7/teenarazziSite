@@ -17,6 +17,7 @@
       document.documentElement.style.background = savedTheme === 'dark' ? '#0f0f0f' : '#eeeeee';
       setTimeout(() => {
         document.documentElement.classList.remove('no-transition');
+        document.documentElement.style.background = '';
       }, 50);
     </script>
   </head>
