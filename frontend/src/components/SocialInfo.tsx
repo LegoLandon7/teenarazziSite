@@ -1,5 +1,10 @@
 import "./SocialInfo.scss"
 
+type Stat = {
+    label: string
+    value: string | number
+}
+
 export default function SocialInfo({
     title,
     link,
@@ -40,7 +45,7 @@ export default function SocialInfo({
                             disabled={refreshing || refreshDisabled}
                             aria-label="Refresh"
                         >
-                            {refreshing ? "Refreshing..." : "🗘 Refresh"}
+                            {refreshing ? "Refreshing..." : "🔄 Refresh"}
                         </button>
                     )}
                     {onEdit && (
