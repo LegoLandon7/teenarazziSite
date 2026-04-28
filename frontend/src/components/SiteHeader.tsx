@@ -29,7 +29,7 @@ export default function SiteHeader({
 
             {(backLink && backLabel) && <a href={backLink}>{"<- " + backLabel}</a>}
 
-            <div className='header-content'>
+            <div className='header-content' >
                 {iconUrl && <img src={iconUrl}/>}
                 <h1>{"" + head}</h1>
             </div>

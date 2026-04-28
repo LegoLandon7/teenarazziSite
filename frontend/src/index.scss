@@ -186,22 +186,26 @@ body {
     line-height: 1.6;
 
     padding-top: var(--navbar-height);
-
-    display: flex;
-    justify-content: center;
-    width: 100%;
 }
 
 .main-content {
+    width: min(100%, var(--max-width));
     max-width: var(--max-width);
-    width: var(--max-width);
+
     margin: 0 auto;
+
     padding: var(--space-lg);
     min-height: 100vh;
+
     display: flex;
     flex-direction: column;
+
+    align-items: center;
 }
 
+* {
+    box-sizing: border-box;
+}
 // scrollbar
 ::-webkit-scrollbar {
     width: 6px;
