@@ -189,19 +189,17 @@ body {
 
     display: flex;
     justify-content: center;
+    width: 100%;
 }
 
 .main-content {
-    width: 100%;
     max-width: var(--max-width);
-
+    width: var(--max-width);
+    margin: 0 auto;
     padding: var(--space-lg);
-
     min-height: 100vh;
-
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
 // scrollbar

@@ -45,7 +45,7 @@ export default function SocialInfo({
                             disabled={refreshing || refreshDisabled}
                             aria-label="Refresh"
                         >
-                            {refreshing ? "Refreshing..." : "🔄 Refresh"}
+                            {refreshing ? "Refreshing..." : "↺ Refresh"}
                         </button>
                     )}
                     {onEdit && (
