@@ -37,12 +37,6 @@
                     color: var(--accent);
                 }
             }
-
-            p {
-                margin: 0;
-                font-size: var(--text-xs);
-                color: var(--text-faint);
-            }
         }
 
         .social-actions {
@@ -120,6 +114,13 @@
         display: flex;
         gap: 0.5rem;
         align-items: center;
+    }
+
+    p {
+        margin: 0;
+        font-size: var(--text-xs);
+        color: var(--text-faint);
+        font-weight: var(--weight-soft);
     }
 }
 

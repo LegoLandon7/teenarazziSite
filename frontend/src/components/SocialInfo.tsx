@@ -34,7 +34,6 @@ export default function SocialInfo({
                     <a href={link || title} target="_blank" rel="noopener noreferrer">
                         {title}
                     </a>
-                    <p>{"last updated: " + new Date(timeStamp).toLocaleString()}</p>
                 </div>
 
                 <div className="social-actions">
@@ -62,6 +61,8 @@ export default function SocialInfo({
                     </div>
                 ))}
             </div>
+
+            <p>{"last updated: " + new Date(timeStamp).toLocaleString()}</p>
         </div>
     );
 }

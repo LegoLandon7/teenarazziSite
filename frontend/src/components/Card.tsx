@@ -19,7 +19,7 @@ export default function Card({
 
         <div className='card-content'>
             <h2>{title}</h2>
-            <hr />
+            {description && <hr />}
             {description && <p>{description}</p>}
         </div>
     </a>

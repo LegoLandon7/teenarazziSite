@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import Card from "../components/Card.tsx";
 import SiteHeader from "../components/SiteHeader.tsx";
 import SocialInfo from "../components/SocialInfo.tsx";
+import "../utils/flex-container.css";
+import SiteSection from "../components/SiteSection.tsx";
 
 const API = "https://api.teenarazzi.com/v2";
 
@@ -112,47 +114,56 @@ export default function Home() {
     }
 
     return (
-        <>
+        <div className="flex-column center">
             <SiteHeader
                 head="Welcome to Teenarazzi!"
                 subhead="A social network primarily made for teenagers"
                 align="center"
             />
+            <div className="flex-row gap mobile">
+                <div className="flex-column w50">
+                    <SiteSection
+                        head="About Teenarazzi"
+                        subhead="Teenarazzi is a social network made from discord and reddit primarily to provide a fun and safe way for teens to interact and socialize!"
+                        imgUrl="/favicon.png"
+                    />
 
-            <Card
-                title="About Teenarazzi!"
-                description="Teenarazzi is a social network made from discord and reddit primarily to provide a fun and safe way for teens to interact and socialize! Click here to learn more."
-                imageUrl="/favicon.png"
-                linkUrl="/about"
-            />
+                    <Card
+                        title="Click here to learn more!"
+                        linkUrl="/about"
+                    />
+                </div>
 
-            <SocialInfo
-                title="Discord"
-                link="https://discord.gg/py9ePyMdec"
-                icon="https://cdn.simpleicons.org/discord"
-                stats={[
-                    { label: "Members", value: discord?.members ?? 0 },
-                    { label: "Online", value: discord?.active_members ?? 0 },
-                ]}
-                timeStamp={discord?.last_updated ?? null}
-                onRefresh={refreshDiscord}
-                refreshing={discordLoading}
-                refreshDisabled={discordCooldown}
-            />
+                <div className="flex-column center w100">
+                    <SocialInfo
+                        title="Discord"
+                        link="https://discord.gg/py9ePyMdec"
+                        icon="https://cdn.simpleicons.org/discord"
+                        stats={[
+                            { label: "Members", value: discord?.members ?? 0 },
+                            { label: "Online", value: discord?.active_members ?? 0 },
+                        ]}
+                        timeStamp={discord?.last_updated ?? null}
+                        onRefresh={refreshDiscord}
+                        refreshing={discordLoading}
+                        refreshDisabled={discordCooldown}
+                    />
 
-            <SocialInfo
-                title="Reddit"
-                link="https://reddit.com/r/teenarazzi"
-                icon="https://cdn.simpleicons.org/reddit"
-                stats={[
-                    { label: "Members", value: reddit?.members ?? 0 },
-                    { label: "Posts Today", value: reddit?.posts_today ?? 0 },
-                ]}
-                timeStamp={reddit?.last_updated ?? null}
-                onRefresh={refreshReddit}
-                refreshing={redditLoading}
-                refreshDisabled={redditCooldown}
-            />
-        </>
-    );
+                    <SocialInfo
+                        title="Reddit"
+                        link="https://reddit.com/r/teenarazzi"
+                        icon="https://cdn.simpleicons.org/reddit"
+                        stats={[
+                            { label: "Members", value: reddit?.members ?? 0 },
+                            { label: "Posts Today", value: reddit?.posts_today ?? 0 },
+                        ]}
+                        timeStamp={reddit?.last_updated ?? null}
+                        onRefresh={refreshReddit}
+                        refreshing={redditLoading}
+                        refreshDisabled={redditCooldown}
+                    />
+                </div>
+            </div>
+        </div>
+    )
 }

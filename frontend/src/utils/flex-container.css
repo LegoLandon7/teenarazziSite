@@ -1,0 +1,44 @@
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.w50 {
+  max-width: 50%;
+}
+
+.w100 {
+  width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .w50 {
+    max-width: 100%;
+  }
+
+  .mobile {
+    flex-direction: column;
+  }
+}
+
+.gap {
+  gap: var(--space-md);
+}
+
+.mobile {
+  gap: var(--space-md);
+}
+
+.center {
+  justify-content: center;
+  align-items: center;
+}
