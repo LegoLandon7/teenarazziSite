@@ -13,7 +13,6 @@ export default function NavBar() {
         setMenuOpen(false);
       }
     }
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
@@ -50,16 +49,12 @@ export default function NavBar() {
       </div>
 
       <div className="nav-controls">
-        <button
-          className="theme-toggle"
-          onClick={toggleTheme}
-        >{theme === "dark" ? "🌙" : "☀️"}
+        <button className="theme-toggle" onClick={toggleTheme}>
+          <span className="toggle-icon">{theme === "dark" ? "🌙" : "☀️"}</span>
         </button>
         <button
           className={`hamburger ${menuOpen ? 'open' : ''}`}
-          onClick={() => {
-            setMenuOpen(!menuOpen);
-          }}
+          onClick={() => setMenuOpen(!menuOpen)}
         >
           <span />
           <span />

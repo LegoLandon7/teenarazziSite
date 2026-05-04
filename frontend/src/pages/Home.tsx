@@ -3,6 +3,7 @@ import Card from "../components/Card.tsx";
 import SiteHeader from "../components/SiteHeader.tsx";
 import SocialInfo from "../components/SocialInfo.tsx";
 import "../utils/flex-container.scss";
+import "../utils/background.scss";
 import SiteSection from "../components/SiteSection.tsx";
 
 const API = "https://api.teenarazzi.com/v2";
@@ -121,7 +122,7 @@ export default function Home() {
                 align="center"
             />
             <div className="flex-row gap mobile stretch">
-                <div className="flex-column w50">
+                <div className="flex-column w50 background">
                     <SiteSection
                         head="About Teenarazzi"
                         subhead="Teenarazzi is a social network made from discord and reddit primarily to provide a fun and safe way for teens to interact and socialize!"
@@ -138,7 +139,7 @@ export default function Home() {
 
                 <div className="flex-column center w100">
                     <SocialInfo
-                        title="Discord"
+                        title="Discord ↗"
                         link="https://discord.gg/py9ePyMdec"
                         icon="https://cdn.simpleicons.org/discord"
                         stats={[
@@ -152,7 +153,7 @@ export default function Home() {
                     />
 
                     <SocialInfo
-                        title="Reddit"
+                        title="Reddit ↗"
                         link="https://reddit.com/r/teenarazzi"
                         icon="https://cdn.simpleicons.org/reddit"
                         stats={[

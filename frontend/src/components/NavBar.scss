@@ -135,7 +135,7 @@
         height: 42px;
 
         border: 2px solid var(--border-strong);
-        background: var(--bg-subtle);
+        background: var(--bg-surface);
 
         font-size: var(--text-md);
         border-radius: var(--radius-full);
@@ -151,6 +151,10 @@
         transition: background var(--transition), border-color var(--transition);
 
         &:hover { background: var(--bg-hover); }
+
+        .toggle-icon {
+            filter: hue-rotate(80deg) saturate(2);
+        }
     }
 
     @media (max-width: $mobile) {

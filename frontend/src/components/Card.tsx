@@ -18,7 +18,11 @@ export default function Card({
         {imageUrl && <img src={imageUrl} alt={title} />}
 
         <div className='card-content'>
-            <h2>{title}</h2>
+            <div className='card-title'>
+                <h2>{title}</h2>
+                {linkUrl && <h3>{'>'}</h3>}
+            </div>
+
             {description && <hr />}
             {description && <p>{description}</p>}
         </div>
