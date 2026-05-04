@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import ReactMarkdown from "react-markdown";
 import { useEffect, useState } from 'react'
 
 import Navbar from '../components/NavBar.tsx'
@@ -17,7 +16,7 @@ function App() {
   useEffect(() => {
     console.log(
       '%c ⛔ Do not paste unknown code in here, unless you know what you\'re doing!',
-      'color: #ff4444; font-size: 14px; font-weight: bold;'
+      'color: #ff4444; font-size: 18px; font-weight: bold;'
     );
   }, []);
 

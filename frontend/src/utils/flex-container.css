@@ -3,6 +3,10 @@
   flex-direction: column;
 }
 
+.margin-auto {
+  margin-top: auto;
+}
+
 .flex-row {
   display: flex;
   flex-direction: row;
@@ -20,7 +24,11 @@
   width: 100%;
 }
 
-@media screen and (max-width: 768px) {
+.h100 {
+  height: 100%;
+}
+
+@media screen and (max-width: 866px) {
   .w50 {
     max-width: 100%;
   }
@@ -41,4 +49,16 @@
 .center {
   justify-content: center;
   align-items: center;
+}
+
+.stretch {
+  align-items: stretch;
+}
+
+.space {
+  justify-content: space-between;
+}
+
+.margin-md {
+  margin-bottom: var(--space-md);
 }

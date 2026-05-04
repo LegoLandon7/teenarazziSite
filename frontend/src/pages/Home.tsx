@@ -120,7 +120,7 @@ export default function Home() {
                 subhead="A social network primarily made for teenagers"
                 align="center"
             />
-            <div className="flex-row gap mobile">
+            <div className="flex-row gap mobile stretch">
                 <div className="flex-column w50">
                     <SiteSection
                         head="About Teenarazzi"
@@ -128,10 +128,12 @@ export default function Home() {
                         imgUrl="/favicon.png"
                     />
 
-                    <Card
-                        title="Click here to learn more!"
-                        linkUrl="/about"
-                    />
+                    <div className="margin-md margin-auto">
+                        <Card
+                            title="Click here to learn more!"
+                            linkUrl="/about"
+                        />
+                    </div>
                 </div>
 
                 <div className="flex-column center w100">
