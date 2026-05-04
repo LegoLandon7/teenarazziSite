@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Card from "../components/Card.tsx";
 import SiteHeader from "../components/SiteHeader.tsx";
 import SocialInfo from "../components/SocialInfo.tsx";
-import "../utils/flex-container.css";
+import "../utils/flex-container.scss";
 import SiteSection from "../components/SiteSection.tsx";
 
 const API = "https://api.teenarazzi.com/v2";
