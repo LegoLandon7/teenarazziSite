@@ -121,8 +121,8 @@ export default function Home() {
                 subhead="A social network primarily made for teenagers"
                 align="center"
             />
-            <div className="flex-row gap mobile stretch">
-                <div className="flex-column w50 background">
+            <div className="flex-row gap center mobile">
+                <div className="flex-column center w50 background">
                     <SiteSection
                         head="About Teenarazzi"
                         subhead="Teenarazzi is a social network made from discord and reddit primarily to provide a fun and safe way for teens to interact and socialize!"
@@ -158,7 +158,7 @@ export default function Home() {
                         icon="https://cdn.simpleicons.org/reddit"
                         stats={[
                             { label: "Members", value: reddit?.members ?? 0 },
-                            { label: "Posts Today", value: reddit?.posts_today ?? 0 },
+                            { label: "Posts Today (last 24h)", value: reddit?.posts_today > 99 ? '100+' : reddit?.posts_today ?? 0 },
                         ]}
                         timeStamp={reddit?.last_updated ?? null}
                         onRefresh={refreshReddit}

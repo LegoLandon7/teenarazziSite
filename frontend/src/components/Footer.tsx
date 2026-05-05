@@ -11,14 +11,14 @@ export default function Footer() {
 
 
                 <a href="mailto:contact@teenarazzi.com" target="_blank" rel="noopener noreferrer">
-                    Contact Us
+                    Contact Us 🖂
                 </a>
 
                 <a href="https://github.com/LegoLandon7/teenarazziSite" target="_blank" rel="noopener noreferrer">
-                    Github Repo
+                    Github Repo ↗
                 </a>
 
-                <a href="/admin">Admin</a>
+                <a href="/admin">Admin ⚠</a>
 
                 <div style={{ padding: "2rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
             </div>
